@@ -31,10 +31,19 @@ export default async function AdminOrdersPage() {
     })),
   }));
 
+  const serializedInquiries = inquiries.map((i) => ({
+    id: i.id,
+    name: i.name,
+    phone: i.phone,
+    message: i.message,
+    read: i.read,
+    createdAt: i.createdAt.toISOString(),
+  }));
+
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
       <AdminNav />
-      <AdminOrdersClient initialOrders={serializedOrders} initialInquiries={inquiries} />
+      <AdminOrdersClient initialOrders={serializedOrders} initialInquiries={serializedInquiries} />
     </div>
   );
 }
