@@ -14,9 +14,21 @@ export default async function AdminOrdersPage() {
   ]);
 
   const serializedOrders = orders.map((o) => ({
-    ...o,
+    id: o.id,
+    customerName: o.customerName,
+    phone: o.phone,
+    address: o.address,
+    deliveryNotes: o.deliveryNotes,
+    notes: o.notes,
+    status: o.status,
     total: Number(o.total),
-    createdAt: o.createdAt.toISOString(), items: o.items.map((i) => ({ ...i, price: Number(i.price) })),
+    createdAt: o.createdAt.toISOString(),
+    items: o.items.map((i) => ({
+      id: i.id,
+      quantity: i.quantity,
+      price: Number(i.price),
+      product: { name: i.product.name },
+    })),
   }));
 
   return (
