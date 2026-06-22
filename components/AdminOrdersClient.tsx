@@ -7,10 +7,10 @@ type OrderItem = { id: string; quantity: number; price: number; product: { name:
 type Order = {
   id: string; customerName: string; phone: string; address: string;
   deliveryNotes?: string | null; notes?: string | null; status: string;
-  total: number; items: OrderItem[]; createdAt: string;
+  total: number; items: OrderItem[]; createdAt: string | Date;
 };
 type Inquiry = {
-  id: string; name: string; phone: string; message: string; read: boolean; createdAt: string;
+  id: string; name: string; phone: string; message: string; read: boolean; createdAt: string | Date;
 };
 
 const statusColors: Record<string, string> = {
