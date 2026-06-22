@@ -1,0 +1,94 @@
+// Abenezer Furniture - Database Schema (PostgreSQL)
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  DELIVERED
+  CANCELLED
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  code        String      @unique
+  name        String
+  slug        String      @unique
+  description String      @db.Text
+  price       Decimal     @db.Decimal(10, 2)
+  size        String?
+  quantity    Int         @default(0)
+  images      String[]    // Cloud storage URLs
+  featured    Boolean     @default(false)
+  active      Boolean     @default(true)
+  category    Category    @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([categoryId])
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  customerName  String
+  phone         String
+  address       String
+  deliveryNotes String?     @db.Text
+  notes         String?     @db.Text
+  status        OrderStatus @default(PENDING)
+  total         Decimal     @db.Decimal(10, 2)
+  items         OrderItem[]
+  createdAt     DateTime    @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2)
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Inquiry {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  message   String   @db.Text
+  productId String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
